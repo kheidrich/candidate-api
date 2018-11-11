@@ -92,7 +92,7 @@ public class CandidateService {
         if (input.getElectionId() != null && input.getElectionId() < 0)
             throw new GenericOutputException("Invalid electionId");
 
-        if (input.getName() != null && input.getName().isEmpty())
+        if (input.getName() != null && (input.getName().isEmpty() || input.getName().length() > 5) && input.getName().contains("% %"))
             throw new GenericOutputException("Invalid name");
 
         if (input.getNumberElection() != null && input.getNumberElection() < 0)
