@@ -89,16 +89,16 @@ public class CandidateService {
     }
 
     private void validateInput(CandidateInput input) {
-        if (input.getElectionId() != null && input.getElectionId() < 0)
+        if (input.getElectionId() == null || input.getElectionId() < 0)
             throw new GenericOutputException("Invalid electionId");
 
-        if (input.getName() != null && (input.getName().isEmpty() || input.getName().length() < 5) && !input.getName().contains("% %"))
+        if (input.getName() == null || input.getName().length() < 5 || input.getName().split(" ").length < 2)
             throw new GenericOutputException("Invalid name");
 
-        if (input.getNumberElection() != null && input.getNumberElection() < 0)
+        if (input.getNumberElection() == null || input.getNumberElection() < 0)
             throw new GenericOutputException("Invalid number election");
 
-        if (input.getPartyId() != null && input.getPartyId() < 0)
+        if (input.getPartyId() == null || input.getPartyId() < 0)
             throw new GenericOutputException("Invalid partyId");
     }
 
