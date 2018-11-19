@@ -32,6 +32,12 @@ public class CandidateApi {
         return candidateService.getById(candidateId);
     }
 
+    @GetMapping("/election/{electionId}")
+    @ApiOperation(value = "Get candidate by election Id")
+    public List<CandidateOutput> getByElectionId(@PathVariable Long electionId){
+        return new ArrayList<CandidateOutput>();
+    }
+
     @PostMapping("/")
     @ApiOperation(value = "Create new candidate")
     public CandidateOutput create(@RequestBody CandidateInput candidateInput){
