@@ -38,11 +38,11 @@ public class Candidate {
         this.name = name;
     }
 
-    public Long getNumber() {
+    public Long getNumberElection() {
         return number;
     }
 
-    public void setNumber(Long number) {
+    public void setNumberElection(Long number) {
         this.number = number;
     }
 
