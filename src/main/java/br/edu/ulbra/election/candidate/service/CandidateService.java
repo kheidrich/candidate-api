@@ -67,6 +67,16 @@ public class CandidateService {
         return candidates;
     }
 
+    public List<CandidateOutput> getByPartyId(Long partyId) {
+        List<CandidateOutput> candidates = new ArrayList<>();
+
+        for (Candidate c : this.candidateRepository.findAll())
+            if (c.getElectionId().equals(partyId))
+                candidates.add(modelMapper.map(c, CandidateOutput.class));
+
+        return candidates;
+    }
+
     public CandidateOutput update(Long candidateId, CandidateInput candidateInput) {
         if (candidateId == null)
             throw new GenericOutputException(MESSAGE_INVALID_ID);
