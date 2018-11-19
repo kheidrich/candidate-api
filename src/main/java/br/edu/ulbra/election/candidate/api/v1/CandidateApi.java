@@ -35,7 +35,7 @@ public class CandidateApi {
     @GetMapping("/election/{electionId}")
     @ApiOperation(value = "Get candidate by election Id")
     public List<CandidateOutput> getByElectionId(@PathVariable Long electionId){
-        return new ArrayList<CandidateOutput>();
+        return this.candidateService.getByElectionId(electionId);
     }
 
     @PostMapping("/")

@@ -31,9 +31,10 @@ public class CandidateService {
         this.modelMapper = modelMapper;
     }
 
-    public List<CandidateOutput> getAll(){
-        Type candidateOutputListType = new TypeToken<List<CandidateOutput>>(){}.getType();
-        return modelMapper.map(candidateRepository.findAll(),candidateOutputListType);
+    public List<CandidateOutput> getAll() {
+        Type candidateOutputListType = new TypeToken<List<CandidateOutput>>() {
+        }.getType();
+        return modelMapper.map(candidateRepository.findAll(), candidateOutputListType);
     }
 
     public CandidateOutput create(CandidateInput candidateInput) {
@@ -43,17 +44,27 @@ public class CandidateService {
         return modelMapper.map(candidate, CandidateOutput.class);
     }
 
-    public CandidateOutput getById(Long candidateId){
-        if (candidateId == null){
+    public CandidateOutput getById(Long candidateId) {
+        if (candidateId == null) {
             throw new GenericOutputException(MESSAGE_INVALID_ID);
         }
 
         Candidate candidate = candidateRepository.findById(candidateId).orElse(null);
-        if (candidate == null){
+        if (candidate == null) {
             throw new GenericOutputException(MESSAGE_CANDIDATE_NOT_FOUND);
         }
 
         return modelMapper.map(candidate, CandidateOutput.class);
+    }
+
+    public List<CandidateOutput> getByElectionId(Long electionId) {
+        List<CandidateOutput> candidates = new ArrayList<>();
+
+        for (Candidate c : this.candidateRepository.findAll())
+            if (c.getElectionId().equals(electionId))
+                candidates.add(modelMapper.map(c, CandidateOutput.class));
+
+        return candidates;
     }
 
     public CandidateOutput update(Long candidateId, CandidateInput candidateInput) {
