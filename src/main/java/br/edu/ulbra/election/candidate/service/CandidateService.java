@@ -5,7 +5,9 @@ import br.edu.ulbra.election.candidate.exception.GenericOutputException;
 import br.edu.ulbra.election.candidate.input.v1.CandidateInput;
 import br.edu.ulbra.election.candidate.model.Candidate;
 import br.edu.ulbra.election.candidate.output.v1.CandidateOutput;
+import br.edu.ulbra.election.candidate.output.v1.ElectionOutput;
 import br.edu.ulbra.election.candidate.output.v1.GenericOutput;
+import br.edu.ulbra.election.candidate.output.v1.PartyOutput;
 import br.edu.ulbra.election.candidate.repository.CandidateRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -15,20 +17,25 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class CandidateService {
     private final CandidateRepository candidateRepository;
     private final ModelMapper modelMapper;
+    private final PartyClientService partyClientService;
+    private final ElectionClientService electionClientService;
 
     private static final String MESSAGE_INVALID_ID = "Invalid id";
     private static final String MESSAGE_CANDIDATE_NOT_FOUND = "Candidate not found";
     private static final String MESSAGE_CANDIDATE_DELETED = "Candidate deleted";
 
     @Autowired
-    public CandidateService(CandidateRepository candidateRepository, ModelMapper modelMapper) {
+    public CandidateService(CandidateRepository candidateRepository, ModelMapper modelMapper,PartyClientService partyClientService,ElectionClientService electionClientService) {
         this.candidateRepository = candidateRepository;
         this.modelMapper = modelMapper;
+        this.partyClientService = partyClientService;
+        this.electionClientService = electionClientService;
     }
 
     public List<CandidateOutput> getAll() {
@@ -116,11 +123,22 @@ public class CandidateService {
         if (input.getName() == null || input.getName().length() < 5 || input.getName().split(" ").length < 2)
             throw new GenericOutputException("Invalid name");
 
-        if (input.getNumberElection() == null || input.getNumberElection() < 0)
+        if (input.getNumberElection() == null || input.getNumberElection() < 0 || electionExists(input.getNumberElection()))
             throw new GenericOutputException("Invalid number election");
 
-        if (input.getPartyId() == null || input.getPartyId() < 0)
+        if (input.getPartyId() == null || input.getPartyId() < 0 || partyExists(input.getPartyId()))
             throw new GenericOutputException("Invalid partyId");
     }
 
+    private boolean partyExists(Long partyId){
+        List<PartyOutput> parties = this.partyClientService.getByPartyId(partyId);
+
+        return parties.size() > 0;
+    }
+
+    private boolean electionExists(Long electionId){
+        List<ElectionOutput> elections = this.electionClientService.getElectionId(electionId);
+
+        return elections.size() > 0;
+    }
 }
