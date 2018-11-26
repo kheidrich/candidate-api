@@ -19,4 +19,10 @@ public class ElectionClientService {
     public List<ElectionOutput> getElectionId(Long electionId){
         return this.electionClient.getByElectionId(electionId);
     }
+
+    public List<ElectionOutput> getId(Long electionId){
+        return this.electionClient.getByElectionId(electionId);
+    }
+
+
 }
