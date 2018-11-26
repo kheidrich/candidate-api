@@ -15,4 +15,7 @@ public interface PartyClient {
 
     @GetMapping("/v1/candidate/party/{partyId}")
     List<PartyOutput> getByPartyId(@PathVariable(name = "partyId") Long partyId);
+    
+    @GetMapping("/v1/candidate/party/")
+    List<PartyOutput> findAll();
 }

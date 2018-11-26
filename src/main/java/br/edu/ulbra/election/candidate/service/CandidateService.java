@@ -1,6 +1,5 @@
 package br.edu.ulbra.election.candidate.service;
 
-import antlr.StringUtils;
 import br.edu.ulbra.election.candidate.exception.GenericOutputException;
 import br.edu.ulbra.election.candidate.input.v1.CandidateInput;
 import br.edu.ulbra.election.candidate.model.Candidate;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @Service
 public class CandidateService {
@@ -117,13 +115,13 @@ public class CandidateService {
     }
 
     private void validateInput(CandidateInput input) {
-        if (input.getElectionId() == null || input.getElectionId() < 0)
+        if (input.getElectionId() == null || input.getElectionId() < 0 || electionExists(input.getElectionId()))
             throw new GenericOutputException("Invalid electionId");
 
         if (input.getName() == null || input.getName().length() < 5 || input.getName().split(" ").length < 2)
             throw new GenericOutputException("Invalid name");
 
-        if (input.getNumberElection() == null || input.getNumberElection() < 0 || electionExists(input.getNumberElection()))
+        if (input.getNumberElection() == null || input.getNumberElection() < 0 || validateNumber(Integer.parseInt(input.getNumberElection().toString().substring(0, 2))))
             throw new GenericOutputException("Invalid number election");
 
         if (input.getPartyId() == null || input.getPartyId() < 0 || partyExists(input.getPartyId()))
@@ -140,5 +138,17 @@ public class CandidateService {
         List<ElectionOutput> elections = this.electionClientService.getElectionId(electionId);
 
         return elections.size() > 0;
+    }
+    
+    public boolean validateNumber(Integer number) {
+        Type partyOutputListType = new TypeToken<List<PartyOutput>>() {
+        }.getType();
+
+        List<PartyOutput> parties = modelMapper.map(partyClientService.findAll(), partyOutputListType);
+        for (PartyOutput party : parties)
+            if (party.getNumber().equals(number))
+                return false;
+
+        return true;
     }
 }

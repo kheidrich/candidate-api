@@ -25,4 +25,8 @@ public class PartyClientService {
     public List<PartyOutput> getByPartyId(Long partyId){
         return this.partyClient.getByPartyId(partyId);
     }
+    
+    public List<PartyOutput> findAll(){
+    	return this.partyClient.findAll();
+    }
 }

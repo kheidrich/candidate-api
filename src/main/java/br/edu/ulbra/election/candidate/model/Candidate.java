@@ -13,7 +13,7 @@ public class Candidate {
     private String name;
     
     @Column(nullable = false)
-    private Long number;
+    private Integer number;
     
     @Column(nullable = false)
     private Long electionId;
@@ -38,11 +38,11 @@ public class Candidate {
         this.name = name;
     }
 
-    public Long getNumberElection() {
+    public Integer getNumberElection() {
         return number;
     }
 
-    public void setNumberElection(Long number) {
+    public void setNumberElection(Integer number) {
         this.number = number;
     }
 
