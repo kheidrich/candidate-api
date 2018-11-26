@@ -13,6 +13,7 @@ public interface ElectionClient {
     @GetMapping("/v1/election/{electionId}")
     ElectionOutput getById(@PathVariable(name = "electionId") Long electionId);
 
-    @GetMapping("/v1/candidate/election/{electionId}")
+    @GetMapping("/v1/vote/{electionId}")
     List<ElectionOutput> getByElectionId(@PathVariable(name = "electionId") Long electionId);
+
 }
