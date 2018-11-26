@@ -92,13 +92,17 @@ public class CandidateService {
         if (candidate == null)
             throw new GenericOutputException(MESSAGE_CANDIDATE_NOT_FOUND);
 
-        candidateInput.setElectionId(candidateInput.getElectionId());
-        candidateInput.setName(candidateInput.getName());
-        candidateInput.setNumberElection(candidateInput.getNumberElection());
-        candidateInput.setPartyId(candidateInput.getPartyId());
-        candidate = candidateRepository.save(candidate);
+        if (candidateHasVote(candidateId)){
+            throw new GenericOutputException("Candidate has vote");
+        }else {
+            candidateInput.setElectionId(candidateInput.getElectionId());
+            candidateInput.setName(candidateInput.getName());
+            candidateInput.setNumberElection(candidateInput.getNumberElection());
+            candidateInput.setPartyId(candidateInput.getPartyId());
+            candidate = candidateRepository.save(candidate);
 
-        return modelMapper.map(candidate, CandidateOutput.class);
+            return modelMapper.map(candidate, CandidateOutput.class);
+        }
     }
 
     public GenericOutput delete(Long candidateId) {
@@ -109,9 +113,13 @@ public class CandidateService {
         if (candidate == null)
             throw new GenericOutputException(MESSAGE_CANDIDATE_NOT_FOUND);
 
-        candidateRepository.delete(candidate);
+        if(!candidateHasVote(candidateId)) {
 
-        return new GenericOutput(MESSAGE_CANDIDATE_DELETED);
+            candidateRepository.delete(candidate);
+            return new GenericOutput(MESSAGE_CANDIDATE_DELETED);
+        }else {
+            throw new GenericOutputException("Candidate has vote");
+        }
     }
 
     private void validateInput(CandidateInput input) {
@@ -135,7 +143,7 @@ public class CandidateService {
     }
 
     private boolean electionExists(Long electionId){
-        List<ElectionOutput> elections = this.electionClientService.getElectionId(electionId);
+        List<ElectionOutput> elections = this.electionClientService.getId(electionId);
 
         return elections.size() > 0;
     }
@@ -150,5 +158,11 @@ public class CandidateService {
                 return false;
 
         return true;
+    }
+
+    public boolean candidateHasVote(Long electionId){
+        List<ElectionOutput> elections = this.electionClientService.getElectionId(electionId);
+
+        return elections.size() > 0;
     }
 }
